@@ -1,0 +1,83 @@
+# Visual Studio
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Roslyn
+[Rr]oslyn/
+
+# NuGet
+*.nupkg
+# The packages folder can be ignored if not storing packages with the solution
+**/packages/*
+# Uncomment if necessary however generally it will be regenerated when needed
+#!**/packages/  
+# Uncomment if using the old style project format
+#!packages/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows 7 library
+*.library-ms
+
+# Windows Explorer shell state
+*.DS_Store
+*.directory
+
+# IIS
+[Ii][Nn]etpub/
+
+# Microsoft Azure Web App publish settings. 
+# This can be used to automate Web App deployments.
+# More info: https://go.microsoft.com/fwlink/?LinkID=208121.
+*.PublishSettings
+
+# Microsoft Azure Web App publish settings. 
+# More info: https://go.microsoft.com/fwlink/?LinkID=208121.
+#*.PublishSettings
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows
+[Dd]esktop.ini
+[Dd]esktop.ini
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Rider
+.idea/
+*.sln.iml
+*.sln.docstates
