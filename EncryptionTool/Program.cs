@@ -9,32 +9,61 @@ namespace EncryptionTool
     {
         static void Main(string[] args)
         {
-            EncryptionHelper.GenerateKeyAndIV(out byte[] key, out byte[] iv);
+           
 
-            //Console.WriteLine("Enter text to encrypt:");
-            //string plainText = Console.ReadLine();
-
-            //byte[] encrypted = EncryptionHelper.Encrypt(plainText, key, iv);
-            //Console.WriteLine($"Encrypted text: {Convert.ToBase64String(encrypted)}");
-
-            //string decrypted = EncryptionHelper.Decrypt(encrypted, key, iv);
-            //Console.WriteLine($"Decrypted text: {decrypted}");
-
-            // File encryption/decryption example with paths relative to project root directory
-            Console.WriteLine("Enter the relative path of the file to encrypt (relative to project root):");
-            string relativeInputFile = Console.ReadLine();
-
-            // Navigate up to project root directory (two levels up from bin\Debug\net5.0 or similar)
             string projectRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName;
-            string inputFile = Path.Combine(projectRoot, relativeInputFile);
 
-            string encryptedFile = Path.Combine(projectRoot, relativeInputFile + ".enc");
-            EncryptionHelper.EncryptFile(inputFile, encryptedFile, key, iv);
-            Console.WriteLine($"File encrypted to: {encryptedFile}");
+            Console.WriteLine("Do you want to encrypt or decrypt a file? (Type 'encrypt' or 'decrypt')");
+            string choice = Console.ReadLine().Trim().ToLower();
 
-            string decryptedFile = Path.Combine(projectRoot, relativeInputFile + ".dec");
-            EncryptionHelper.DecryptFile(encryptedFile, decryptedFile, key, iv);
-            Console.WriteLine($"File decrypted to: {decryptedFile}");
+            if (choice == "encrypt")
+            {
+                EncryptionHelper.GenerateKeyAndIV(out byte[] key, out byte[] iv);
+                Console.WriteLine("Enter the relative path of the file to encrypt (relative to project root):");
+                string relativeInputFile = Console.ReadLine();
+                string inputFile = Path.Combine(projectRoot, relativeInputFile);
+
+                string keyFilePath = Path.Combine(projectRoot, "encryption.key");
+                string ivFilePath = Path.Combine(projectRoot, "encryption.iv");
+                try
+                {
+                    File.WriteAllBytes(keyFilePath, key);
+                    File.WriteAllBytes(ivFilePath, iv);
+                    Console.WriteLine($"Key file created at: {keyFilePath}");
+                    Console.WriteLine($"IV file created at: {ivFilePath}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to create key or IV file: {ex.Message}");
+                    return;
+                }
+
+                string encryptedFile = Path.Combine(projectRoot, relativeInputFile + ".enc");
+                EncryptionHelper.EncryptFile(inputFile, encryptedFile, key, iv);
+                Console.WriteLine($"File encrypted to: {encryptedFile}");
+            }
+            else if (choice == "decrypt")
+            {
+                Console.WriteLine("Enter the relative path of the file to decrypt (relative to project root):");
+                string relativeInputFile = Console.ReadLine();
+                string encryptedFile = Path.Combine(projectRoot, relativeInputFile);
+
+                Console.WriteLine("Enter the relative path of the key file (relative to project root):");
+                string relativeKeyFile = Console.ReadLine();
+                string keyFilePath = Path.Combine(projectRoot, relativeKeyFile);
+
+                Console.WriteLine("Enter the relative path of the IV file (relative to project root):");
+                string relativeIvFile = Console.ReadLine();
+                string ivFilePath = Path.Combine(projectRoot, relativeIvFile);
+
+                string decryptedFile = Path.Combine(projectRoot, relativeInputFile + ".dec");
+                EncryptionHelper.DecryptFile(encryptedFile, decryptedFile, keyFilePath, ivFilePath);
+                Console.WriteLine($"File decrypted to: {decryptedFile}");
+            }
+            else
+            {
+                Console.WriteLine("Invalid choice. Please restart the program and choose either 'encrypt' or 'decrypt'.");
+            }
 
             Console.ReadLine();
         }

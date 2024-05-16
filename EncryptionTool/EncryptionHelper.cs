@@ -102,27 +102,31 @@ namespace EncryptionTool
         }
 
         // Method to decrypt a file using AES decryption
-        public static void DecryptFile(string inputFile, string outputFile, byte[] key, byte[] iv)
+        public static void DecryptFile(string inputFile, string outputFile, string keyFilePath, string ivFilePath)
         {
-            // Open the input and output files
+            // Read the key from the specified file
+            byte[] key = ReadKeyFromFile(keyFilePath);
+            byte[] iv = ReadKeyFromFile(ivFilePath);
+
             using (FileStream fsInput = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
             using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
             using (Aes aesAlg = Aes.Create())
             {
-                // Set the key and initialization vector (IV)
                 aesAlg.Key = key;
                 aesAlg.IV = iv;
-
-                // Create a decryptor object
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
-                // Create a CryptoStream to perform decryption
                 using (CryptoStream csDecrypt = new CryptoStream(fsInput, decryptor, CryptoStreamMode.Read))
                 {
-                    // Copy the contents of the CryptoStream to the output file, decrypting it
                     csDecrypt.CopyTo(fsOutput);
                 }
             }
+        }
+
+        // Helper method to read the key from a file
+        private static byte[] ReadKeyFromFile(string keyFilePath)
+        {
+            return File.ReadAllBytes(keyFilePath);
         }
     }
 
