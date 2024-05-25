@@ -8,6 +8,12 @@ namespace EncryptionTool
 {
     public static class EncryptionHelper
     {
+
+        // AES-256 key size in bytes
+        private const int KeySize = 32;
+        // AES block size in bytes
+        private const int IvSize = 16;
+
         // Method to encrypt plain text using AES encryption
         public static byte[] Encrypt(string plainText, byte[] key, byte[] iv)
         {
@@ -108,12 +114,11 @@ namespace EncryptionTool
 
             byte[] keyAndIv = File.ReadAllBytes(keyAndIVFilePath);
 
-            int keySize = 32; // AES-256 key size in bytes
-            int ivSize = 16; // AES block size in bytes
-            byte[] key = new byte[keySize];
-            byte[] iv = new byte[ivSize];
-            Buffer.BlockCopy(keyAndIv, 0, key,0,keySize);
-            Buffer.BlockCopy(keyAndIv, keySize, iv, 0, ivSize);
+
+            byte[] key = new byte[KeySize];
+            byte[] iv = new byte[IvSize];
+            Buffer.BlockCopy(keyAndIv, 0, key,0,KeySize);
+            Buffer.BlockCopy(keyAndIv, KeySize, iv, 0, IvSize);
 
             using (FileStream fsInput = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
             using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
