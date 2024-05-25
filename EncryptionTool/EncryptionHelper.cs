@@ -102,11 +102,18 @@ namespace EncryptionTool
         }
 
         // Method to decrypt a file using AES decryption
-        public static void DecryptFile(string inputFile, string outputFile, string keyFilePath, string ivFilePath)
+        public static void DecryptFile(string inputFile, string outputFile, string keyAndIVFilePath)
         {
-            // Read the key from the specified file
-            byte[] key = ReadKeyFromFile(keyFilePath);
-            byte[] iv = ReadKeyFromFile(ivFilePath);
+            // Read the key & IV from the specified file
+
+            byte[] keyAndIv = File.ReadAllBytes(keyAndIVFilePath);
+
+            int keySize = 32; // AES-256 key size in bytes
+            int ivSize = 16; // AES block size in bytes
+            byte[] key = new byte[keySize];
+            byte[] iv = new byte[ivSize];
+            Buffer.BlockCopy(keyAndIv, 0, key,0,keySize);
+            Buffer.BlockCopy(keyAndIv, keySize, iv, 0, ivSize);
 
             using (FileStream fsInput = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
             using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create, FileAccess.Write))

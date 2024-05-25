@@ -23,14 +23,19 @@ namespace EncryptionTool
                 string relativeInputFile = Console.ReadLine();
                 string inputFile = Path.Combine(projectRoot, relativeInputFile);
 
-                string keyFilePath = Path.Combine(projectRoot, "encryption.key");
-                string ivFilePath = Path.Combine(projectRoot, "encryption.iv");
+
+                // Combine key and IV into a single byte array
+                byte[] keyAndIv = new byte[key.Length + iv.Length];
+                Buffer.BlockCopy(key, 0, keyAndIv, 0, key.Length);
+                Buffer.BlockCopy(iv, 0, keyAndIv, key.Length, iv.Length);
+
+                string keyIvFilePath = Path.Combine(projectRoot, "encryption.keyiv");
+
                 try
                 {
-                    File.WriteAllBytes(keyFilePath, key);
-                    File.WriteAllBytes(ivFilePath, iv);
-                    Console.WriteLine($"Key file created at: {keyFilePath}");
-                    Console.WriteLine($"IV file created at: {ivFilePath}");
+                    // Write combined key and IV to a single file
+                    File.WriteAllBytes(keyIvFilePath, keyAndIv);
+                    Console.WriteLine($"Key & IV file created at: {keyIvFilePath}");
                 }
                 catch (Exception ex)
                 {
@@ -48,16 +53,13 @@ namespace EncryptionTool
                 string relativeInputFile = Console.ReadLine();
                 string encryptedFile = Path.Combine(projectRoot, relativeInputFile);
 
-                Console.WriteLine("Enter the relative path of the key file (relative to project root):");
-                string relativeKeyFile = Console.ReadLine();
-                string keyFilePath = Path.Combine(projectRoot, relativeKeyFile);
+                Console.WriteLine("Enter the relative path of the key & IV file (relative to project root):");
+                string relativeKeyAndIVFile = Console.ReadLine();
+                string keyAndIVFilePath = Path.Combine(projectRoot, relativeKeyAndIVFile);
 
-                Console.WriteLine("Enter the relative path of the IV file (relative to project root):");
-                string relativeIvFile = Console.ReadLine();
-                string ivFilePath = Path.Combine(projectRoot, relativeIvFile);
 
                 string decryptedFile = Path.Combine(projectRoot, relativeInputFile + ".dec");
-                EncryptionHelper.DecryptFile(encryptedFile, decryptedFile, keyFilePath, ivFilePath);
+                EncryptionHelper.DecryptFile(encryptedFile, decryptedFile, keyAndIVFilePath);
                 Console.WriteLine($"File decrypted to: {decryptedFile}");
             }
             else
