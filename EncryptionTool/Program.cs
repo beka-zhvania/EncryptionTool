@@ -24,6 +24,7 @@ namespace EncryptionTool
 
                 if (choice == "encrypt")
                 {
+
                     EncryptionHelper.GenerateKeyAndIV(out byte[] key, out byte[] iv);
                     Console.WriteLine("Enter the relative path of the file to encrypt (relative to project root):");
                     string relativeInputFile = Console.ReadLine();
@@ -49,9 +50,18 @@ namespace EncryptionTool
                         continue;
                     }
 
-                    string encryptedFile = Path.Combine(projectRoot, relativeInputFile + ".enc");
-                    EncryptionHelper.EncryptFile(inputFile, encryptedFile, key, iv);
-                    Console.WriteLine($"File encrypted to: {encryptedFile}\n");
+                    // try to encrypt the file
+                    try
+                    {
+                        string encryptedFile = Path.Combine(projectRoot, relativeInputFile + ".enc");
+                        EncryptionHelper.EncryptFile(inputFile, encryptedFile, key, iv);
+                        Console.WriteLine($"File encrypted to: {encryptedFile}\n");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Encryption Failed! Please try again. Error message:\n{ex.Message}\n");
+                        continue;
+                    }
                 }
                 else if (choice == "decrypt")
                 {
@@ -63,10 +73,15 @@ namespace EncryptionTool
                     string relativeKeyAndIVFile = Console.ReadLine();
                     string keyAndIVFilePath = Path.Combine(projectRoot, relativeKeyAndIVFile);
 
-
-                    string decryptedFile = Path.Combine(projectRoot, relativeInputFile + ".dec");
-                    EncryptionHelper.DecryptFile(encryptedFile, decryptedFile, keyAndIVFilePath);
-                    Console.WriteLine($"File decrypted to: {decryptedFile}\n");
+                    try
+                    {
+                        string decryptedFile = Path.Combine(projectRoot, relativeInputFile + ".dec");
+                        EncryptionHelper.DecryptFile(encryptedFile, decryptedFile, keyAndIVFilePath);
+                        Console.WriteLine($"File decrypted to: {decryptedFile}\n");
+                    } catch (Exception ex)
+                    {
+                        Console.WriteLine($"Decryption Failed. Please ensure correct encrypted file and key were provided and try again! Error message:\n { ex.Message}\n");
+                    }
                 }
                 else if (choice == "exit")
                 {
